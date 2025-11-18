@@ -1,0 +1,130 @@
+:root {
+  --primary: #1a5d1a;
+  --secondary: #f4a261;
+  --light: #f8f9fa;
+  --dark: #212529;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f5f5f5;
+}
+
+.navbar-brand {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+}
+
+.hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(assets/facade.jpeg) center/cover no-repeat;
+  color: #fff;
+  min-height: 100vh; /* Full viewport height */
+  display: flex;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  text-align: center;
+  padding: 0;
+}
+
+.hero .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  margin-bottom: 1.5rem;
+}
+
+footer {
+  background: var(--dark);
+  color: #fff;
+}
+
+.modal-header {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background: #144c14;
+  border-color: #144c14;
+}
+
+.table thead {
+  background: var(--primary);
+  color: #fff;
+}
+
+.badge-pending {
+  background: #ffc107;
+}
+
+.badge-confirmed {
+  background: #28a745;
+}
+
+.badge-rejected {
+  background: #dc3545;
+}
+
+.admin-section {
+  background: #fff;
+  position: relative;
+  z-index: 10;
+}
+
+/* Ensure clickable elements are interactive */
+.btn, .nav-link, [data-bs-toggle="modal"] {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* Admin Table Image Styling */
+#appointmentsTable img {
+  border: 1px solid var(--light);
+  border-radius: 4px;
+  transition: opacity 0.3s;
+}
+
+#appointmentsTable img:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+/* Zoomed Image Modal Styling */
+.modal-body img {
+  max-width: 100%;
+  max-height: 80vh; /* Allow larger zoom */
+  margin: auto;
+  display: block;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  .table-responsive {
+    font-size: 0.9rem;
+  }
+}
+
+/* Lazy Load Background */
+.lazy-bg {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+}
