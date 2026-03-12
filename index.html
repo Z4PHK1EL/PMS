@@ -1,150 +1,722 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Holy Cross Parish Management System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holy Cross Parish - Appointment Booking</title>
+    <meta name="description" content="Book appointments for sacraments and services at Holy Cross Parish">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d4af37;
+            --secondary-color: #34495e;
+            --light-bg: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-bg);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, rgba(44, 62, 80, 0.55), rgba(52, 73, 94, 0.45)), 
+                url('assets/Altar.jpg') center/cover no-repeat fixed;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .hero-content {
+            color: white;
+            z-index: 2;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .booking-card {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .card-header-custom {
+            background: var(--primary-color);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .card-header-custom h3 {
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .form-floating {
+            margin-bottom: 1rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        }
+        
+        .btn-primary-custom {
+            background-color: var(--accent-color);       /* gold #d4af37 */
+            color: #1a252f;                             /* dark text for contrast */
+            border: none;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"/>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERet7yg==" crossorigin="anonymous"/>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet"/>
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="style.css"/>
+        .btn-primary-custom:hover {
+            background-color: #b8972e;                  /* darker gold on hover */
+            color: #1a252f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .service-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+        }
+        
+        .info-section {
+            color: white;                    /* default text color for whole section */
+        }
+
+        .info-section .text-center h2 {
+            color: black;      
+            font-weight: 300;
+            letter-spacing: 0.8px;
+            text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+            margin-bottom: 0.75rem;
+        }
+
+        .info-section .lead {
+            color: rgba(255, 255, 255, 0.92);
+            font-weight: 300;
+            font-size: 1.25rem;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+            margin-bottom: 3rem;             
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.14) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            border-radius: 16px;
+            padding: 2.25rem 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.22);
+            transition: all 0.4s ease;
+            height: 100%;                    
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.22) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+            border-color: rgba(212, 175, 55, 0.4);   
+        }
+
+        .service-icon {
+            background: var(--accent-color);
+            color: #1e2a44;                   
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+
+        .feature-card h5 {
+            color: black;
+            font-weight: 300;
+            margin: 1rem 0 0.85rem;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.90);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .row.g-4 > div {
+            display: flex;
+        }
+
+        .row.g-4 .feature-card {
+            flex: 1;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1060;
+        }
+        
+        .spinner-border {
+            width: 1.2rem;
+            height: 1.2rem;
+            margin-right: 0.5rem;
+        }
+        
+        .image-preview {
+            max-height: 200px;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-    <div class="container">
-      <a class="navbar-brand" href="#"><i class="fa-solid fa-church me-2"></i>Holy Cross Parish</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#adminLoginModal" data-debug="login-trigger">Login</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
 
-  <!-- Hero -->
-  <section id="home" class="hero">
-    <div class="container">
-      <h1>Welcome to Holy Cross Parish</h1>
-      <p class="lead">A place of worship, community, and spiritual growth.</p>
-      <a href="#" data-bs-toggle="modal" data-bs-target="#appointmentModal" class="btn btn-lg btn-outline-light mt-3" data-debug="appointment-trigger">Book Appointment</a>
-    </div>
-  </section>
-
-  <!-- Appointment Modal -->
-  <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="appointmentModalLabel"><i class="fa-solid fa-calendar-check me-2"></i>Book an Appointment</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background: rgba(44, 62, 80, 0.95); backdrop-filter: blur(10px);">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i data-lucide="cross" class="me-2"></i>
+                Holy Cross Parish
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#book">Book Appointment</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="admin.html">Admin Login</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="modal-body">
-          <form id="appointmentForm" class="appointmentForm" novalidate>
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label">Full Name *</label>
-                <input type="text" class="form-control" name="name" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Contact Number *</label>
-                <input type="tel" class="form-control" name="phone" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Email *</label>
-                <input type="email" class="form-control" name="email" required placeholder="you@example.com" />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Service Type *</label>
-                <select class="form-select" name="service" required>
-                  <option value="">Select Service</option>
-                  <option>Baptism</option>
-                  <option>Wedding</option>
-                  <option>Confession</option>
-                  <option>Counseling</option>
-                  <option>Funeral Mass</option>
-                  <option>Other</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Preferred Date *</label>
-                <input type="date" class="form-control" name="date" required />
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Preferred Time *</label>
-                <input type="time" class="form-control" name="time" required />
-              </div>
-              <div class="col-12">
-                <label class="form-label" for="validId">Valid ID (max 5 MB) *</label>
-                <input id="validId" name="validId" class="form-control" type="file" accept="image/*" capture="environment" required />
-                <div class="form-text">You can choose from your gallery or capture a photo. Accepted: images (JPG/PNG/WebP/HEIC), up to 5 MB.</div>
-                <div class="invalid-feedback" id="validIdError"></div>
-                <div class="mt-2" id="validIdPreviewWrap" style="display:none;">
-                  <img id="validIdPreview" alt="ID preview" class="img-fluid rounded border" style="max-height: 240px; object-fit: contain;">
+    </nav>
+
+    <!-- Hero Section with Booking Form -->
+    <section class="hero-section" id="book">
+        <div class="container">
+            <div class="row align-items-center min-vh-100 pt-5">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Welcome to </br> Holy Cross Parish</h1>
+                        <p class="hero-subtitle">Schedule your sacraments, masses, and pastoral services with ease. We're here to serve your spiritual needs.</p>
+                        <div class="d-flex gap-3">
+                            <button 
+                                type="button" 
+                                class="btn btn-light btn-lg px-4 fw-semibold" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#announcementModal"
+                            >
+                                <i data-lucide="volume-2" class="me-2"></i>Announcement
+                            </button>
+
+                            <button 
+                                type="button" 
+                                class="btn btn-outline-light btn-lg px-4"
+                                data-bs-toggle="modal" 
+                                data-bs-target="#requirementsModal"
+                            >
+                                <i data-lucide="list-checks" class="me-2"></i>Requirements
+                            </button>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div class="col-12">
-                <label class="form-label">Additional Notes</label>
-                <textarea class="form-control" name="notes" rows="3"></textarea>
-              </div>
-            </div>
-            <div class="mt-4 text-end">
-              <button type="submit" class="btn btn-primary" data-debug="submit-request">Submit Request</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+                <div class="col-lg-6">
+                    <div class="booking-card">
+                        <div class="card-header-custom">
+                            <div class="service-icon">
+                                <i data-lucide="calendar" style="width: 30px; height: 30px;"></i>
+                            </div>
+                            <h3>Book an Appointment</h3>
+                            <p class="mb-0 opacity-75">Fill in your details below</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="bookingForm" novalidate>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="fullName" placeholder="Full Name" required>
+                                            <label for="fullName">Full Name</label>
+                                            <div class="invalid-feedback">Please enter your full name</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="email" class="form-control" id="email" placeholder="Email" required>
+                                            <label for="email">Email Address</label>
+                                            <div class="invalid-feedback">Please enter a valid email</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-  <!-- Admin Login Modal -->
-  <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-labelledby="adminLoginModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="adminLoginModalLabel"><i class="fa-solid fa-user-shield me-2"></i>Admin Login</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="adminLoginForm" novalidate>
-            <div class="mb-3">
-              <label for="adminEmail" class="form-label">Admin Email</label>
-              <input type="email" class="form-control" id="adminEmail"  required placeholder="example@gmail.com" />
-            </div>
-            <div class="mb-3">
-              <label for="adminPassword" class="form-label">Password</label>
-              <input type="password" class="form-control" id="adminPassword" required />
-            </div>
-            <button type="submit" class="btn btn-primary w-100" data-debug="login-submit">Login</button>
-            <div id="loginError" class="text-danger mt-2" style="display: none;"></div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="tel" class="form-control" id="phone" placeholder="Phone" required>
+                                            <label for="phone">Phone Number</label>
+                                            <div class="invalid-feedback">Please enter your phone number</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="serviceType" required>
+                                                <option value="">Select Service</option>
+                                                <option value="Baptism">Baptism</option>
+                                                <option value="Wedding">Wedding</option>
+                                                <option value="Funeral">Funeral Service</option>
+                                                <option value="House Blessing">House Blessing</option>
+                                                <option value="Confession">Confession</option>
+                                                <option value="Mass Intention">Mass Intention</option>
+                                                <option value="Pastoral Counseling">Pastoral Counseling</option>
+                                                <option value="Anointing of the Sick">Anointing of the Sick</option>
+                                            </select>
+                                            <label for="serviceType">Type of Service</label>
+                                            <div class="invalid-feedback">Please select a service</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-  <!-- Footer -->
-  <footer class="py-4">
-    <div class="container text-center">
-      <p>© 2025 Holy Cross Parish Management System. All rights reserved.</p>
-      <p>Contact: holycrossparish14@gmail.com | +639923028170</p>
-    </div>
-  </footer>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="date" class="form-control" id="appointmentDate" required>
+                                            <label for="appointmentDate">Preferred Date</label>
+                                            <div class="invalid-feedback">Please select a date</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="time" class="form-control" id="appointmentTime" required>
+                                            <label for="appointmentTime">Preferred Time</label>
+                                            <div class="invalid-feedback">Please select a time</div>
+                                        </div>
+                                    </div>
+                                </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <!-- Custom JS -->
-  <script src="script.js"></script>
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="notes" style="height: 100px" placeholder="Special requests or notes"></textarea>
+                                    <label for="notes">Special Requests or Notes (Optional)</label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="supportingImage" class="form-label fw-semibold">
+                                        <i data-lucide="image" class="me-2"></i>Supporting Documents (Optional)
+                                    </label>
+                                    <input type="file" class="form-control" id="supportingImage" accept="image/*">
+                                    <div class="form-text">Upload baptismal certificates, marriage licenses, or other relevant documents</div>
+                                    <img id="imagePreview" class="image-preview img-fluid" alt="Preview">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary-custom w-100 btn-lg" id="submitBtn">
+                                    <span class="spinner-border spinner-border-sm d-none" id="submitSpinner"></span>
+                                    <span id="submitText">Submit Appointment</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="info-section" id="services">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Our Services</h2>
+                <p class="lead text-muted">Sacraments and pastoral care available for booking</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="service-icon mb-3">
+                            <i data-lucide="droplets" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h5>Baptism</h5>
+                        <p class="text-muted small">Welcome new members into the faith community</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="service-icon mb-3">
+                            <i data-lucide="heart" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h5>Wedding</h5>
+                        <p class="text-muted small">Celebrate the sacrament of matrimony</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="service-icon mb-3">
+                            <i data-lucide="home" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h5>House Blessing</h5>
+                        <p class="text-muted small">Bless your home and family</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="service-icon mb-3">
+                            <i data-lucide="message-circle" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h5>Pastoral Counseling</h5>
+                        <p class="text-muted small">Guidance and spiritual support</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-4 text-white" style="background: var(--primary-color);">
+        <div class="container text-center">
+            <p class="mb-0">© 2026 Holy Cross Parish. All rights reserved.</p>
+            <small class="opacity-75">Secure Appointment Booking System</small>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+        
+        // Initialize EmailJS
+        emailjs.init("eU-xPATZn_z0wgAY5");
+        
+        // Supabase configuration
+        const SUPABASE_URL = 'https://ehatowzdktvkklohheud.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoYXRvd3pka3R2a2tsb2hoZXVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzMzMjQsImV4cCI6MjA4ODgwOTMyNH0.9y24F1SVxv0FM_48b99qULhbQaysx1l2oXvBpQZQiPs';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // Semaphore SMS Configuration
+        const SEMAPHORE_API_KEY = '350c8088b0def041faee51f4be8bb7b9';
+        
+        // Form handling
+        const bookingForm = document.getElementById('bookingForm');
+        const imageInput = document.getElementById('supportingImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const submitBtn = document.getElementById('submitBtn');
+        const submitSpinner = document.getElementById('submitSpinner');
+        const submitText = document.getElementById('submitText');
+        
+        // Image preview
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Form submission
+        bookingForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!bookingForm.checkValidity()) {
+                e.stopPropagation();
+                bookingForm.classList.add('was-validated');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            submitSpinner.classList.remove('d-none');
+            submitText.textContent = 'Submitting...';
+            
+            try {
+                const formData = {
+                    name: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    service_type: document.getElementById('serviceType').value,
+                    appointment_date: document.getElementById('appointmentDate').value,
+                    appointment_time: document.getElementById('appointmentTime').value,
+                    notes: document.getElementById('notes').value,
+                    status: 'pending',
+                    created_at: new Date().toISOString()
+                };
+                
+                const file = imageInput.files[0];
+                if (file) {
+                    const base64 = await convertFileToBase64(file);
+                    formData.image_data = base64;
+                }
+                
+                const { data, error } = await supabaseClient
+                    .from('appointments')
+                    .insert([formData])
+                    .select();
+                
+                if (error) throw error;
+                
+                const refId = data && data[0] && data[0].id 
+                    ? data[0].id.slice(0, 8).toUpperCase() 
+                    : 'REF-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+                
+                showToast('Success', `Your appointment request has been submitted! Reference ID: ${refId}`, 'success');
+                
+                bookingForm.reset();
+                imagePreview.style.display = 'none';
+                bookingForm.classList.remove('was-validated');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                showToast('Error', 'Failed to submit appointment. Please try again.', 'danger');
+            } finally {
+                submitBtn.disabled = false;
+                submitSpinner.classList.add('d-none');
+                submitText.textContent = 'Submit Appointment';
+            }
+        });
+        
+        function convertFileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toastId = 'toast' + Date.now();
+            
+            const toastHTML = `
+                <div class="toast align-items-center text-white bg-${type} border-0" role="alert" id="${toastId}">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <strong>${title}</strong><br>
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', toastHTML);
+            const toastElement = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+            
+            toastElement.addEventListener('hidden.bs.toast', () => {
+                toastElement.remove();
+            });
+        }
+        
+        // Set minimum date to today
+        const dateInput = document.getElementById('appointmentDate');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+
+        // Show announcement modal on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const announcementModalEl = document.getElementById('announcementModal');
+            if (announcementModalEl) {
+                const modal = new bootstrap.Modal(announcementModalEl, {
+                    backdrop: 'static',
+                    keyboard: true
+                });
+                modal.show();
+            }
+        });
+    </script>
+
+    <!-- Announcement Modal (auto-opens on load) -->
+    <div class="modal fade" id="announcementModal" tabindex="-1" aria-labelledby="announcementModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: var(--primary-color); color: white;">
+                    <h5 class="modal-title" id="announcementModalLabel">
+                        <i data-lucide="volume-2" class="me-2"></i>
+                        Parish Announcement
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h4 class="text-center mb-3" style="color: var(--primary-color);">
+                        Important Notice – Lenten Season 2026
+                    </h4>
+                    
+                    <p class="lead text-center">
+                        Beginning March 4, 2026 (Ash Wednesday), 
+                        <strong>no weddings or major celebrations</strong> will be scheduled until after Easter.
+                    </p>
+                    
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item"><strong>Confession Schedule:</strong> Daily 5:00 PM – 6:30 PM</li>
+                        <li class="list-group-item"><strong>Stations of the Cross:</strong> Every Friday at 6:00 PM</li>
+                        <li class="list-group-item"><strong>Parish Lenten Recollection:</strong> March 21, 2026 (Saturday) – 8:00 AM</li>
+                    </ul>
+                    
+                    <p class="text-center text-muted fst-italic">
+                        "Return to me with all your heart..." – Joel 2:12
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Requirements Modal (only opens when button is clicked) -->
+    <div class="modal fade" id="requirementsModal" tabindex="-1" aria-labelledby="requirementsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: var(--primary-color); color: white;">
+                    <h5 class="modal-title" id="requirementsModalLabel">
+                        <i data-lucide="list-checks" class="me-2"></i>
+                        Requirements for Sacraments & Services
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h5 class="mb-4" style="color: var(--primary-color);">General Requirements</h5>
+                    <ul class="list-group list-group-flush mb-4">
+                        <li class="list-group-item"><strong>Valid ID</strong> of the applicant or parents/guardians</li>
+                        <li class="list-group-item"><strong>Recent passport-size photo</strong> (white background)</li>
+                        <li class="list-group-item">Filled-out <strong>application form</strong> (available at the parish office)</li>
+                    </ul>
+
+                    <h5 class="mb-3 mt-4" style="color: var(--primary-color);">Specific Requirements by Sacrament/Service</h5>
+
+                    <div class="accordion" id="requirementsAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseBaptism">
+                                    Baptism
+                                </button>
+                            </h2>
+                            <div id="collapseBaptism" class="accordion-collapse collapse show">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Birth Certificate (PSA / NSO authenticated)</li>
+                                        <li>Marriage Contract of parents (if applicable)</li>
+                                        <li>Names & addresses of godparents (at least one male & one female)</li>
+                                        <li>Godparents must be confirmed Catholics</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWedding">
+                                    Wedding
+                                </button>
+                            </h2>
+                            <div id="collapseWedding" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Marriage License (valid within 120 days)</li>
+                                        <li>Canonical Interview Certificate</li>
+                                        <li>Pre-Cana Seminar Certificate</li>
+                                        <li>Baptismal & Confirmation certificates (recently issued)</li>
+                                        <li>Birth Certificates of both parties</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHouse">
+                                    House Blessing
+                                </button>
+                            </h2>
+                            <div id="collapseHouse" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li>Proof of ownership or permission from owner</li>
+                                        <li>Preferred date and time</li>
+                                        <li>Optional: small offering for the priest</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOthers">
+                                    Other Services (Confession, Mass Intention, etc.)
+                                </button>
+                            </h2>
+                            <div id="collapseOthers" class="accordion-collapse collapse">
+                                <div class="accordion-body">
+                                    <p>For confession: No documents needed – just come during scheduled times.</p>
+                                    <p>For Mass Intention: Stipend offering and preferred date(s).</p>
+                                    <p>Contact the parish office for more specific requirements.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-center text-muted">
+                        <small>Please prepare all documents in advance. Requirements may vary slightly depending on the case.</small><br>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

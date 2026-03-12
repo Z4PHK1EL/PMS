@@ -1,85 +1,1048 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Holy Cross Parish - Admin Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Holy Cross Parish</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Certificate Generator Libraries -->
+    <script src="https://unpkg.com/pizzip@3.1.0/dist/pizzip.min.js"></script>
+    <script src="https://unpkg.com/pizzip@3.1.0/dist/pizzip-utils.min.js"></script>
+    <script src="https://unpkg.com/docxtemplater@3.46.0/build/docxtemplater.js"></script>
 
-  <!-- Bootstrap 5 -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #d4af37;
+            --success-color: #27ae60;
+            --danger-color: #c0392b;
+            --warning-color: #f39c12;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f7;
+        }
+        
+        .login-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), #34495e);
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .admin-navbar {
+            background: var(--primary-color);
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        
+        .appointments-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .table thead th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border: none;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .btn-action {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 6px;
+            margin: 0 2px;
+            transition: all 0.2s;
+        }
+        
+        .btn-approve {
+            background: var(--success-color);
+            color: white;
+        }
+        
+        .btn-approve:hover {
+            background: #229954;
+        }
+        
+        .btn-reject {
+            background: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-reject:hover {
+            background: #a93226;
+        }
+        
+        .btn-view {
+            background: #3498db;
+            color: white;
+        }
+        
+        .filter-btn {
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            background: transparent;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            margin: 0 5px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+        }
+        
+        .modal-image {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+        
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
 
-  <style>
-    body { background: #f8f9fa; }
-    .admin-header { background: #1a5d1a; color: white; }
-    .table thead { background: #1a5d1a; color: white; }
-    .btn-resend { font-size: 0.85rem; }
-    .img-thumbnail { height: 60px; object-fit: cover; }
-  </style>
+        /* Certificates styles */
+        .cert-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 2rem;
+        }
+        
+        .nav-btn {
+            color: white;
+            border: none;
+        }
+        
+        .nav-btn.active {
+            background: var(--accent-color);
+            color: #1e2a44;
+            font-weight: 600;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #1e2a44;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+            .btn-action {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="container py-4">
-    <div class="card shadow">
-      <div class="card-header admin-header d-flex justify-content-between align-items-center">
-        <h3 class="mb-0"><i class="fa-solid fa-users-gear me-2"></i>Admin Dashboard</h3>
-        <button id="adminLogout" class="btn btn-outline-light">
-          <i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Logout
-        </button>
-      </div>
-      <div class="card-body">
-        <h5>Appointment Requests</h5>
-        <div class="table-responsive">
-          <table class="table table-hover align-middle" id="appointmentsTable">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Email</th>
-                <th>Service</th>
-                <th>Date & Time</th>
-                <th>Notes</th>
-                <th>ID Photo</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+    <!-- Login Section -->
+    <div id="loginSection" class="login-section">
+        <div class="login-card">
+            <div class="text-center mb-4">
+                <div class="service-icon mx-auto mb-3" style="width: 80px; height: 80px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="shield" style="width: 40px; height: 40px; color: white;"></i>
+                </div>
+                <h3 class="fw-bold">Admin Portal</h3>
+                <p class="text-muted">Holy Cross Parish Management</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control" id="adminEmail" placeholder="admin@holycross.parish" required>
+                    <label for="adminEmail">Email address</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control" id="adminPassword" placeholder="Password" required>
+                    <label for="adminPassword">Password</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold" style="background: var(--primary-color); border: none;">
+                    <span class="spinner-border spinner-border-sm d-none" id="loginSpinner"></span>
+                    <span id="loginText">Sign In</span>
+                </button>
+                <div id="loginError" class="alert alert-danger mt-3 d-none" role="alert"></div>
+            </form>
+            
+            <div class="mt-3 text-center">
+                <a href="index.html" class="text-decoration-none text-muted">
+                    <i data-lucide="arrow-left" class="me-1" style="width: 16px; height: 16px;"></i>
+                    Back to Website
+                </a>
+            </div>
         </div>
-        <div id="noAppointments" class="text-center py-5 text-muted">
-          <h4>No appointments yet.</h4>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- Logout Success Modal -->
-  <div class="modal fade" id="logoutSuccessModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header bg-success text-white">
-          <h5>Logged Out Successfully</h5>
+    <!-- Admin Dashboard -->
+    <div id="dashboardSection" style="display: none;">
+        <!-- Navigation -->
+        <nav class="admin-navbar">
+            <div class="container">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="d-flex align-items-center text-white">
+                        <i data-lucide="cross" class="me-2"></i>
+                        <span class="fw-bold fs-5">Holy Cross Parish Admin</span>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <div class="d-flex gap-2">
+                        <button onclick="showSection('appointments')" class="btn nav-btn active" id="navAppointments">
+                            <i data-lucide="calendar" class="me-1"></i>Appointments
+                        </button>
+                        <button onclick="showSection('certificates')" class="btn nav-btn" id="navCertificates">
+                            <i data-lucide="file-text" class="me-1"></i>Certificates
+                        </button>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <span class="text-white" id="adminEmail">Administrator</span>
+                        <button class="btn btn-outline-light btn-sm" onclick="logout()">
+                            <i data-lucide="log-out" class="me-1"></i>Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Appointments Content -->
+        <div id="appointmentsContent" class="container py-4">
+            <!-- Stats Row -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #e3f2fd; color: #1976d2;">
+                            <i data-lucide="calendar" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1" id="statTotal">0</h3>
+                        <p class="text-muted mb-0">Total Appointments</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #fff3e0; color: #f57c00;">
+                            <i data-lucide="clock" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1" id="statPending">0</h3>
+                        <p class="text-muted mb-0">Pending</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #e8f5e9; color: #388e3c;">
+                            <i data-lucide="check-circle" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1" id="statApproved">0</h3>
+                        <p class="text-muted mb-0">Approved</p>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: #ffebee; color: #d32f2f;">
+                            <i data-lucide="x-circle" style="width: 24px; height: 24px;"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1" id="statRejected">0</h3>
+                        <p class="text-muted mb-0">Rejected</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="mb-4 d-flex flex-wrap gap-2 justify-content-center justify-content-md-start">
+                <button class="filter-btn active" onclick="filterAppointments('all')">All</button>
+                <button class="filter-btn" onclick="filterAppointments('pending')">Pending</button>
+                <button class="filter-btn" onclick="filterAppointments('approved')">Approved</button>
+                <button class="filter-btn" onclick="filterAppointments('rejected')">Rejected</button>
+            </div>
+
+            <!-- Appointments Table -->
+            <div class="appointments-table">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Service</th>
+                                <th>Date & Time</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="emptyState" class="empty-state d-none">
+                    <i data-lucide="inbox" style="width: 48px; height: 48px; opacity: 0.3;"></i>
+                    <p class="mt-2">No appointments found</p>
+                </div>
+            </div>
         </div>
-        <div class="modal-body text-center py-4">
-          <p>Redirecting to home page...</p>
+
+        <!-- Certificates Content -->
+        <div id="certificatesContent" class="container py-4" style="display: none;">
+            <div class="cert-section">
+                <h4 class="fw-bold mb-4"><i data-lucide="file-text"></i> Automated Certificate Generator</h4>
+                
+                <div class="row">
+                    <div class="col-lg-8">
+                        <form id="certificateForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Certificate Type</label>
+                                    <select class="form-select" id="certType" onchange="toggleFields()" required>
+                                        <option value="baptism">Baptismal Certificate</option>
+                                        <option value="confirmation">Confirmation Certificate</option>
+                                        <option value="first_communion">First Communion Certificate</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Full Name</label>
+                                    <input type="text" class="form-control" id="certName" required>
+                                </div>
+                                <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Date of Sacrament</label>
+                                        <input type="date" class="form-control" id="sacramentDate" required>
+                                </div>
+                            </div>
+
+                            <!-- Baptism-specific fields -->
+                            <div id="baptismFields">
+                                <div class="row g-3 mt-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Parents</label>
+                                        <input type="text" class="form-control" id="parents" placeholder="e.g. Juan & Maria Dela Cruz">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Place of Birth</label>
+                                        <input type="text" class="form-control" id="birthPlace" placeholder="e.g. Bayombong, Nueva Vizcaya">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Common fields (shown for Baptism & Confirmation) -->
+                            <div id="commonSacramentFields">
+                                <div class="row g-3 mt-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Minister / Priest</label>
+                                        <input type="text" class="form-control" id="minister">
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">Male Sponsor / Godfather</label>
+                                        <input type="text" class="form-control" id="sponsorMale">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Female Sponsor / Godmother</label>
+                                        <input type="text" class="form-control" id="sponsorFemale">
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Book No.</label>
+                                        <input type="text" class="form-control" id="bookNo">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Page No.</label>
+                                        <input type="text" class="form-control" id="pageNo">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Line No.</label>
+                                        <input type="text" class="form-control" id="lineNo">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- First Communion - only name + date already shown above -->
+
+                            <button type="button" class="btn btn-primary-custom w-100 mt-4 py-3 fw-bold" onclick="saveCertificate()">
+                                Save & Generate Certificate (.docx)
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Certificates Table -->
+                <h5 class="mt-5 mb-3 fw-bold">Sacramental Records (Realtime)</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th onclick="sortTable(0)">Type</th>
+                                <th onclick="sortTable(1)">Name</th>
+                                <th onclick="sortTable(2)">Date</th>
+                                <th onclick="sortTable(3)">Minister</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="certTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Image Modal (for appointments) -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Supporting Document</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" alt="Document" class="modal-image">
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <!-- SUPABASE CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Details Modal (for appointments) -->
+    <div class="modal fade" id="detailsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Appointment Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detailsContent">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <!-- EmailJS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <!-- Spinner Overlay -->
+    <div class="spinner-overlay" id="spinnerOverlay">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
 
-  <!-- Admin JS -->
-  <script src="admin.js"></script>
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Supabase
+        const SUPABASE_URL = 'https://ehatowzdktvkklohheud.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVoYXRvd3pka3R2a2tsb2hoZXVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzMzMjQsImV4cCI6MjA4ODgwOTMyNH0.9y24F1SVxv0FM_48b99qULhbQaysx1l2oXvBpQZQiPs';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // EmailJS
+        emailjs.init("eU-xPATZn_z0wgAY5");
+
+        // Semaphore
+        const SEMAPHORE_API_KEY = '350c8088b0def041faee51f4be8bb7b9';
+        const SEMAPHORE_SENDER_NAME = 'HCP';
+
+        let currentFilter = 'all';
+        let appointments = [];
+        let certificates = [];
+        let realtimeSubscriptionAppointments = null;
+        let realtimeSubscriptionCertificates = null;
+
+        // Check auth on load
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session) {
+                showDashboard(session.user);
+            } else {
+                showLogin();
+            }
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            const spinner = document.getElementById('loginSpinner');
+            const text = document.getElementById('loginText');
+            const errorDiv = document.getElementById('loginError');
+
+            spinner.classList.remove('d-none');
+            text.textContent = 'Signing in...';
+            errorDiv.classList.add('d-none');
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+                if (error) throw error;
+                if (data.user) showDashboard(data.user);
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.classList.remove('d-none');
+            } finally {
+                spinner.classList.add('d-none');
+                text.textContent = 'Sign In';
+            }
+        });
+
+        function showLogin() {
+            document.getElementById('loginSection').style.display = 'flex';
+            document.getElementById('dashboardSection').style.display = 'none';
+        }
+
+        function showDashboard(user) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            document.getElementById('adminEmail').textContent = user.email;
+
+            loadAppointments();
+            setupRealtimeAppointments();
+
+            showSection('appointments');
+            setupRealtimeCertificates();
+            loadCertificates();
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            if (realtimeSubscriptionAppointments) realtimeSubscriptionAppointments.unsubscribe();
+            if (realtimeSubscriptionCertificates) realtimeSubscriptionCertificates.unsubscribe();
+            showLogin();
+        }
+
+        // ────────────────────────────────────────────────
+        // Appointments logic
+        // ────────────────────────────────────────────────
+
+        async function loadAppointments() {
+            showSpinner(true);
+            try {
+                const { data, error } = await supabaseClient
+                    .from('appointments')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+                appointments = data || [];
+                updateStats();
+                renderAppointments();
+            } catch (error) {
+                console.error(error);
+                showToast('Error', 'Failed to load appointments', 'danger');
+            } finally {
+                showSpinner(false);
+            }
+        }
+
+        function setupRealtimeAppointments() {
+            realtimeSubscriptionAppointments = supabaseClient
+                .channel('appointments-channel')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, (payload) => {
+                    handleRealtimeAppointmentChange(payload);
+                })
+                .subscribe();
+        }
+
+        function handleRealtimeAppointmentChange(payload) {
+            const { eventType, new: newRecord, old: oldRecord } = payload;
+            if (eventType === 'INSERT') {
+                appointments.unshift(newRecord);
+                showToast('New', `${newRecord.name} booked ${newRecord.service_type}`, 'info');
+            } else if (eventType === 'UPDATE') {
+                const index = appointments.findIndex(a => a.id === newRecord.id);
+                if (index !== -1) appointments[index] = newRecord;
+            } else if (eventType === 'DELETE') {
+                appointments = appointments.filter(a => a.id !== oldRecord.id);
+            }
+            updateStats();
+            renderAppointments();
+        }
+
+        function updateStats() {
+            document.getElementById('statTotal').textContent = appointments.length;
+            document.getElementById('statPending').textContent = appointments.filter(a => a.status === 'pending').length;
+            document.getElementById('statApproved').textContent = appointments.filter(a => a.status === 'approved').length;
+            document.getElementById('statRejected').textContent = appointments.filter(a => a.status === 'rejected').length;
+        }
+
+        function filterAppointments(status) {
+            currentFilter = status;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase() === status || (status === 'all' && btn.textContent === 'All'));
+            });
+            renderAppointments();
+        }
+
+        function renderAppointments() {
+            const tbody = document.getElementById('appointmentsTableBody');
+            const empty = document.getElementById('emptyState');
+            let filtered = currentFilter === 'all' ? appointments : appointments.filter(a => a.status === currentFilter);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '';
+                empty.classList.remove('d-none');
+                return;
+            }
+
+            empty.classList.add('d-none');
+            tbody.innerHTML = filtered.map(apt => `
+                <tr>
+                    <td>
+                        <strong>${apt.name}</strong>
+                        <div class="small text-muted">${apt.email}</div>
+                    </td>
+                    <td><span class="badge bg-secondary">${apt.service_type}</span></td>
+                    <td>
+                        <div>${formatDate(apt.appointment_date)}</div>
+                        <div class="small text-muted">${formatTime(apt.appointment_time)}</div>
+                    </td>
+                    <td>
+                        <div>${apt.phone}</div>
+                        ${apt.image_data ? `<span class="badge bg-info mt-1">Has Document</span>` : ''}
+                    </td>
+                    <td><span class="status-badge status-${apt.status}">${apt.status.toUpperCase()}</span></td>
+                    <td>
+                        <button class="btn-action btn-view" onclick="viewDetails('${apt.id}')">
+                            <i data-lucide="eye"></i>
+                        </button>
+                        ${apt.image_data ? `
+                        <button class="btn-action btn-view" onclick="viewImage('${apt.id}')" style="background:#6c757d;">
+                            <i data-lucide="image"></i>
+                        </button>` : ''}
+                        ${apt.status === 'pending' ? `
+                        <button class="btn-action btn-approve" onclick="updateStatus('${apt.id}', 'approved')">
+                            <i data-lucide="check"></i>
+                        </button>
+                        <button class="btn-action btn-reject" onclick="updateStatus('${apt.id}', 'rejected')">
+                            <i data-lucide="x"></i>
+                        </button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function viewDetails(id) {
+            const apt = appointments.find(a => a.id === id);
+            if (!apt) return;
+            const content = `
+                <div class="mb-3"><strong>Name:</strong> ${apt.name}</div>
+                <div class="mb-3"><strong>Email:</strong> ${apt.email}</div>
+                <div class="mb-3"><strong>Phone:</strong> ${apt.phone}</div>
+                <div class="mb-3"><strong>Service:</strong> ${apt.service_type}</div>
+                <div class="mb-3"><strong>Date & Time:</strong> ${formatDate(apt.appointment_date)} at ${formatTime(apt.appointment_time)}</div>
+                <div class="mb-3"><strong>Status:</strong> <span class="status-badge status-${apt.status}">${apt.status.toUpperCase()}</span></div>
+                ${apt.notes ? `<div class="mb-3"><strong>Notes:</strong><br><div class="p-2 bg-light rounded">${apt.notes}</div></div>` : ''}
+                <div class="mb-3"><strong>Submitted:</strong> ${new Date(apt.created_at).toLocaleString()}</div>
+            `;
+            document.getElementById('detailsContent').innerHTML = content;
+            new bootstrap.Modal(document.getElementById('detailsModal')).show();
+        }
+
+        function viewImage(id) {
+            const apt = appointments.find(a => a.id === id);
+            if (!apt || !apt.image_data) return;
+            document.getElementById('modalImage').src = apt.image_data;
+            new bootstrap.Modal(document.getElementById('imageModal')).show();
+        }
+
+        async function updateStatus(id, status) {
+            showSpinner(true);
+            try {
+                const { error } = await supabaseClient
+                    .from('appointments')
+                    .update({ status, updated_at: new Date().toISOString() })
+                    .eq('id', id);
+                if (error) throw error;
+
+                const apt = appointments.find(a => a.id === id);
+                await Promise.all([
+                    sendEmailNotification(apt, status),
+                    sendSMSNotification(apt, status)
+                ]);
+
+                showToast('Success', `Appointment ${status}`, 'success');
+            } catch (error) {
+                console.error(error);
+                showToast('Error', 'Failed to update', 'danger');
+            } finally {
+                showSpinner(false);
+            }
+        }
+
+        async function sendEmailNotification(data, status) {
+            try {
+                const templateParams = {
+                    to_name: data.name,
+                    to_email: data.email,
+                    service_type: data.service_type,
+                    appointment_date: data.appointment_date,
+                    appointment_time: data.appointment_time,
+                    status: status,
+                    message: status === 'approved' 
+                        ? `Your appointment for ${data.service_type} on ${data.appointment_date} at ${data.appointment_time} has been approved.`
+                        : `Your appointment request for ${data.service_type} cannot be accommodated at this time.`
+                };
+                const templateId = status === 'approved' ? 'template_Confirmed' : 'template_rejected';
+                await emailjs.send('Appointment_Service', templateId, templateParams);
+            } catch (e) {
+                console.error('Email failed', e);
+            }
+        }
+
+        async function sendSMSNotification(data, status) {
+            try {
+                let phone = data.phone.replace(/[\s-]/g, '');
+                if (phone.startsWith('0')) phone = '63' + phone.substring(1);
+                else if (!phone.startsWith('63')) phone = '63' + phone;
+
+                const message = status === 'approved'
+                    ? `Holy Cross Parish: ${data.service_type} on ${data.appointment_date} ${formatTime(data.appointment_time)} APPROVED. Arrive 15 min early.`
+                    : `Holy Cross Parish: ${data.service_type} request cannot be accommodated. Contact office.`;
+
+                await fetch('https://api.semaphore.co/api/v4/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        apikey: SEMAPHORE_API_KEY,
+                        number: phone,
+                        message,
+                        sendername: SEMAPHORE_SENDER_NAME
+                    })
+                });
+            } catch (e) {
+                console.error('SMS failed', e);
+            }
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function formatTime(time) {
+            const [h, m] = time.split(':');
+            const hour = parseInt(h);
+            return `${hour % 12 || 12}:${m} ${hour >= 12 ? 'PM' : 'AM'}`;
+        }
+
+        // ────────────────────────────────────────────────
+        // Certificates logic - updated version
+        // ────────────────────────────────────────────────
+
+        const TEMPLATES = {
+            baptism:          "https://ehatowzdktvkklohheud.supabase.co/storage/v1/object/sign/templates/baptism_template.docx.docx?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hYmVjMzgwMy1iZGFiLTQ0YmUtYTgxOC1kNzM2MDY4MmIyYjciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0ZW1wbGF0ZXMvYmFwdGlzbV90ZW1wbGF0ZS5kb2N4LmRvY3giLCJpYXQiOjE3NzMzMTEzMTMsImV4cCI6MTgwNDg0NzMxM30.dNj2iOle7FgkEheO9eK1eLeiGhgZwcwGLnAF1sUDh-w",
+            confirmation:     "https://ehatowzdktvkklohheud.supabase.co/storage/v1/object/sign/templates/confirmation_template.docx.docx?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hYmVjMzgwMy1iZGFiLTQ0YmUtYTgxOC1kNzM2MDY4MmIyYjciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0ZW1wbGF0ZXMvY29uZmlybWF0aW9uX3RlbXBsYXRlLmRvY3guZG9jeCIsImlhdCI6MTc3MzMxMTM1NSwiZXhwIjoxODA0ODQ3MzU1fQ.lNjXFoR7xA-ra5Q0V1uVgGp5N8KDiJxGXU998djiVGA",
+            first_communion:  "https://ehatowzdktvkklohheud.supabase.co/storage/v1/object/sign/templates/first_communion_template.docx.docx?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV9hYmVjMzgwMy1iZGFiLTQ0YmUtYTgxOC1kNzM2MDY4MmIyYjciLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJ0ZW1wbGF0ZXMvZmlyc3RfY29tbXVuaW9uX3RlbXBsYXRlLmRvY3guZG9jeCIsImlhdCI6MTc3MzMxMTM3NCwiZXhwIjoxODA0ODQ3Mzc0fQ._jVN-xWdtbbgSHc_l5XtnmLRW63C0k1nURPX18w5i-Y"
+        };
+
+        function showSection(section) {
+            document.getElementById('appointmentsContent').style.display = section === 'appointments' ? 'block' : 'none';
+            document.getElementById('certificatesContent').style.display = section === 'certificates' ? 'block' : 'none';
+            document.getElementById('navAppointments').classList.toggle('active', section === 'appointments');
+            document.getElementById('navCertificates').classList.toggle('active', section === 'certificates');
+        }
+
+        function toggleFields() {
+            const type = document.getElementById('certType').value;
+
+            // Baptism → show parents + birth place + common fields
+            document.getElementById('baptismFields').style.display = type === 'baptism' ? 'block' : 'none';
+
+            // Confirmation & Baptism → show minister, sponsors, book/page/line
+            document.getElementById('commonSacramentFields').style.display = 
+                (type === 'baptism' || type === 'confirmation') ? 'block' : 'none';
+
+            // First Communion → only name + date (already visible in main row)
+        }
+
+        async function saveCertificate() {
+            const type = document.getElementById('certType').value;
+            const name = document.getElementById('certName').value.trim();
+            const sacramentDate = document.getElementById('sacramentDate').value;
+
+            if (!name || !sacramentDate) {
+                alert('Full Name and Date of Sacrament are required.');
+                return;
+            }
+
+            const data = {
+                certificate_type: type,
+                name: name,
+                sacrament_date: sacramentDate
+            };
+
+            // Add fields only when relevant
+            if (type === 'baptism' || type === 'confirmation') {
+                data.minister = document.getElementById('minister').value.trim();
+                data.sponsor_male = document.getElementById('sponsorMale').value.trim();
+                data.sponsor_female = document.getElementById('sponsorFemale').value.trim();
+                data.book_number = document.getElementById('bookNo').value.trim();
+                data.page_number = document.getElementById('pageNo').value.trim();
+                data.line_number = document.getElementById('lineNo').value.trim();
+            }
+
+            if (type === 'baptism') {
+                data.parents = document.getElementById('parents').value.trim();
+                data.birth_place = document.getElementById('birthPlace').value.trim();
+            }
+
+            const { error } = await supabaseClient.from('certificates').insert([data]);
+            if (error) {
+                alert('Error saving record: ' + error.message);
+                return;
+            }
+
+            alert('Record saved. Generating certificate...');
+            generateAndDownload(data);
+            loadCertificates();
+            document.getElementById('certificateForm').reset();
+            toggleFields();
+        }
+
+        async function generateAndDownload(record) {
+            try {
+                const url = TEMPLATES[record.certificate_type];
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Template not found');
+                const arrayBuffer = await response.arrayBuffer();
+
+                const zip = new PizZip(arrayBuffer);
+                const doc = new docxtemplater(zip, {
+                    paragraphLoop: true,
+                    linebreaks: true
+                });
+
+                const templateData = {
+                    name: record.name || '',
+                    parents: record.parents || '',
+                    birth_place: record.birth_place || '',
+                    baptism_date: record.sacrament_date ? new Date(record.sacrament_date).toLocaleDateString('en-PH') : '',
+                    confirmation_date: record.sacrament_date ? new Date(record.sacrament_date).toLocaleDateString('en-PH') : '',
+                    first_communion_date: record.sacrament_date ? new Date(record.sacrament_date).toLocaleDateString('en-PH') : '',
+                    minister: record.minister || '',
+                    sponsor_male: record.sponsor_male || '',
+                    sponsor_female: record.sponsor_female || '',
+                    book_number: record.book_number || '',
+                    page_number: record.page_number || '',
+                    line_number: record.line_number || ''
+                };
+
+                doc.render(templateData);
+                const blob = doc.getZip().generate({
+                    type: 'blob',
+                    mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                });
+
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `${record.name.replace(/\s+/g, '_')}_${record.certificate_type}_certificate.docx`;
+                link.click();
+            } catch (err) {
+                console.error(err);
+                alert('Failed to generate certificate. Check template URL and file format.');
+            }
+        }
+
+        async function loadCertificates() {
+            const { data, error } = await supabaseClient
+                .from('certificates')
+                .select('*')
+                .order('created_at', { ascending: false });
+            if (error) {
+                console.error(error);
+                return;
+            }
+            certificates = data || [];
+            renderCertificates();
+        }
+
+        function renderCertificates() {
+            const tbody = document.getElementById('certTableBody');
+            tbody.innerHTML = certificates.map(c => `
+                <tr>
+                    <td><span class="badge bg-primary">${c.certificate_type.replace('_', ' ').toUpperCase()}</span></td>
+                    <td>${c.name}</td>
+                    <td>${c.sacrament_date ? new Date(c.sacrament_date).toLocaleDateString('en-PH') : '-'}</td>
+                    <td>${c.minister || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-success" onclick="generateAndDownloadFromId('${c.id}')">
+                            Download .docx
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function generateAndDownloadFromId(id) {
+            const record = certificates.find(r => r.id === id);
+            if (record) generateAndDownload(record);
+        }
+
+        function sortTable(n) {
+            const table = document.getElementById('certTableBody');
+            let switching = true;
+            let dir = 'asc';
+            let switchcount = 0;
+            while (switching) {
+                switching = false;
+                const rows = table.rows;
+                for (let i = 0; i < (rows.length - 1); i++) {
+                    let shouldSwitch = false;
+                    const x = rows[i].getElementsByTagName('TD')[n];
+                    const y = rows[i + 1].getElementsByTagName('TD')[n];
+                    if (dir === 'asc') {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === 'desc') {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount === 0 && dir === 'asc') {
+                        dir = 'desc';
+                        switching = true;
+                    }
+                }
+            }
+        }
+
+        function setupRealtimeCertificates() {
+            realtimeSubscriptionCertificates = supabaseClient
+                .channel('certificates-realtime')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'certificates' }, () => {
+                    loadCertificates();
+                })
+                .subscribe();
+        }
+
+        // ────────────────────────────────────────────────
+        // Shared helpers
+        // ────────────────────────────────────────────────
+
+        function showSpinner(show) {
+            document.getElementById('spinnerOverlay').style.display = show ? 'flex' : 'none';
+        }
+
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toastId = 'toast' + Date.now();
+            const html = `
+                <div class="toast align-items-center text-white bg-${type} border-0" id="${toastId}" role="alert">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <strong>${title}</strong><br>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>`;
+            container.insertAdjacentHTML('beforeend', html);
+            const toast = new bootstrap.Toast(document.getElementById(toastId));
+            toast.show();
+            setTimeout(() => document.getElementById(toastId)?.remove(), 5000);
+        }
+    </script>
 </body>
 </html>
