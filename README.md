@@ -32,7 +32,6 @@ A modern, secure, and user-friendly web application for **Holy Cross Parish** th
   - Uses your own `.docx` templates stored in Supabase Storage
   - One-click save + automatic `.docx` generation & download
   - Real-time certificates table with sorting
-- Dark navy + gold liturgical theme with smooth animations
 
 ### Technical Highlights
 - **Backend:** Supabase (PostgreSQL database, authentication, realtime subscriptions, storage)
@@ -41,7 +40,6 @@ A modern, secure, and user-friendly web application for **Holy Cross Parish** th
 - **Certificate Generation:** docxtemplater + PizZip (client-side `.docx` rendering)
 - **Realtime:** Live updates for both appointments and certificates
 - **Security:** Row Level Security + email/password auth
-- Organized code structure: separate CSS/JS files per page
 
 ## Tech Stack
 
@@ -61,10 +59,8 @@ holy-cross-parish-booking/
 ├── admin.html               # Admin dashboard
 ├── css/
 │   ├── style.css            # Public site styles
-│   └── admin.css            # Admin dashboard styles
 ├── js/
-│   ├── script.js            # Public site JavaScript
-│   └── admin.js             # Admin dashboard JavaScript
+│   ├── supabase.js          #supabase config
 ├── assets/
 │   └── Altar.jpg            # Hero background image
 └── README.md
