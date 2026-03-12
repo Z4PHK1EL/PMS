@@ -4,8 +4,6 @@ A modern, secure, and user-friendly web application for **Holy Cross Parish** th
 
 **Admin Dashboard:** `/admin.html` (protected with email/password login)
 
-Current date context: March 2026 (supports Lenten season announcements)
-
 ## ✨ Key Features
 
 ### Public-Facing Website (index.html)
