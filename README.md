@@ -1,96 +1,72 @@
-**Holy Cross Parish Appointment Booking System**
-**1. Project Overview**
-A modern, responsive, and fully functional web-based appointment booking platform for Holy Cross Parish.
-It allows parishioners to book sacraments and services online while providing the parish admin team with a secure, real-time dashboard for managing appointments and automatically generating official sacramental certificates.
-Built with:
+# Holy Cross Parish Appointment Booking System
 
-HTML5, CSS3 (Bootstrap 5 + custom glassmorphism design)
-Supabase (backend, database, authentication, realtime)
-EmailJS + Semaphore SMS (notifications)
-docxtemplater (automated .docx certificate generation)
+A modern, secure, and user-friendly web application for **Holy Cross Parish** that allows parishioners to book sacraments and pastoral services online, while providing parish administrators with a powerful dashboard to manage appointments and automatically generate official sacramental certificates.
 
-**2. Key Features (Public Website – index.html)**
-Hero Section & Booking Experience
+**Admin Dashboard:** `/admin.html` (protected with email/password login)
 
-Stunning full-screen hero with fixed altar background image and dark overlay
-Prominent “Book an Appointment” card with glassmorphism effect (semi-transparent white background)
-Clean booking form with floating labels and real-time validation
-Fields: Full Name, Email, Phone, Service Type (dropdown), Preferred Date, Preferred Time, Notes, Optional Document Upload
-Live image preview when user uploads supporting documents
-Minimum date restriction (cannot book in the past)
-Gold accent buttons with smooth hover animations
+Current date context: March 2026 (supports Lenten season announcements)
 
-Smart Modals
+## ✨ Key Features
 
-Announcement Modal – Automatically opens on every page load/refresh
-Displays important Lenten Season 2026 notice (no weddings until after Easter)
-Confession schedule, Stations of the Cross, Recollection dates
+### Public-Facing Website (index.html)
+- Beautiful full-screen hero section with fixed altar background and glassmorphism booking card
+- Easy appointment booking form with:
+  - Full name, email, phone
+  - Service type dropdown (Baptism, Wedding, House Blessing, etc.)
+  - Preferred date & time (past dates blocked)
+  - Optional notes & document upload (with live preview)
+- Automatic **Announcement Modal** on page load (Lenten 2026 restrictions)
+- **Requirements Modal** (opens on button click) with accordion-style sacrament requirements
+- Transparent glassmorphism **Services** section highlighting main offerings
+- Toast notifications for form submission feedback
+- Fully responsive & mobile-friendly design
 
-Requirements Modal – Opens only when user clicks the “Requirements” button (replaces old “Our Services” button)
-General requirements + accordion sections for:
-Baptism
-Wedding
-House Blessing
-Other services (Confession, Mass Intention, etc.)
+### Admin Dashboard (admin.html)
+- Secure login using Supabase Authentication
+- Real-time **Appointments** overview:
+  - Live stats (Total, Pending, Approved, Rejected)
+  - Filterable & searchable table
+  - Approve / Reject buttons with automatic EmailJS + Semaphore SMS notifications
+  - View full details & uploaded documents in modals
+- **Certificates Generator** module:
+  - Supports **Baptism**, **Confirmation**, and **First Communion** certificates
+  - Dynamic form fields (First Communion only shows name + date)
+  - Uses your own `.docx` templates stored in Supabase Storage
+  - One-click save + automatic `.docx` generation & download
+  - Real-time certificates table with sorting
+- Dark navy + gold liturgical theme with smooth animations
 
+### Technical Highlights
+- **Backend:** Supabase (PostgreSQL database, authentication, realtime subscriptions, storage)
+- **Frontend:** Bootstrap 5 + custom glassmorphism + Lucide icons
+- **Notifications:** EmailJS (email) + Semaphore (SMS – Philippines-ready)
+- **Certificate Generation:** docxtemplater + PizZip (client-side `.docx` rendering)
+- **Realtime:** Live updates for both appointments and certificates
+- **Security:** Row Level Security + email/password auth
+- Organized code structure: separate CSS/JS files per page
 
+## Tech Stack
 
-Services Section
+- HTML5 / CSS3 / JavaScript (ES6+)
+- Bootstrap 5.3
+- Supabase (database, auth, realtime, storage)
+- EmailJS
+- Semaphore SMS API
+- docxtemplater + PizZip
+- Lucide Icons
 
-Beautiful transparent glassmorphism cards with the same altar background visible behind them
-Four highlighted services: Baptism, Wedding, House Blessing, Pastoral Counseling
-Hover effects, equal-height cards, gold icons
+## Project Structure
 
-Additional UX Features
-
-Toast notifications for successful submissions
-Fully responsive (mobile-first design)
-Lucide icons throughout
-Professional footer with copyright
-
-**3. Key Features (Admin Dashboard – admin.html)**
-Secure Login
-
-Supabase Authentication (email + password)
-Protected dashboard (only logged-in admins can access)
-
-Real-time Appointments Management
-
-Live statistics cards: Total, Pending, Approved, Rejected
-Filter buttons: All / Pending / Approved / Rejected
-Realtime table (updates instantly when someone books)
-Columns: Name, Service, Date & Time, Contact, Status, Actions
-Actions per row:
-View full details (modal)
-View uploaded document (image modal)
-Approve / Reject (with one click)
-
-Automatic notifications:
-Email via EmailJS (different templates for approved/rejected)
-SMS via Semaphore (Philippines-ready with +63 formatting)
-
-
-Automated Certificate Generator (New Major Feature)
-
-Dedicated Certificates tab (separate from Appointments)
-Supports three official certificate types:
-Baptismal Certificate (full fields: name, parents, birth place, baptism date, minister, sponsors male/female, book/page/line)
-Confirmation Certificate (name, confirmation date, minister, sponsors, book/page/line)
-First Communion Certificate (only name + date of first communion – simplified form)
-
-Dynamic form: fields automatically appear/disappear based on selected type
-Uses your own .docx template files stored in Supabase Storage
-One-click “Save & Generate Certificate” button
-Instant .docx download with correct placeholders filled
-Realtime Certificates table (sortable by Type, Name, Date, Minister)
-Download button on every saved record
-
-**4. Technical & Security Features
-**
-All data stored in Supabase (appointments + certificates tables)
-Realtime subscriptions (appointments and certificates update live)
-Image upload converted to base64 and stored safely
-Row Level Security enabled
-Clean, maintainable code structure
-No external paid hosting required (Supabase free tier is sufficient)
-Mobile-optimized admin interface
+```text
+holy-cross-parish-booking/
+├── index.html               # Public booking website
+├── admin.html               # Admin dashboard
+├── css/
+│   ├── style.css            # Public site styles
+│   └── admin.css            # Admin dashboard styles
+├── js/
+│   ├── script.js            # Public site JavaScript
+│   └── admin.js             # Admin dashboard JavaScript
+├── assets/
+│   └── Altar.jpg            # Hero background image
+└── README.md
