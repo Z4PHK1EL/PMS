@@ -1,6 +1,5 @@
-Holy Cross Parish Appointment Booking System
-Project Features & Key Features (Full Detailed Documentation)
-1. Project Overview
+**Holy Cross Parish Appointment Booking System**
+**1. Project Overview**
 A modern, responsive, and fully functional web-based appointment booking platform for Holy Cross Parish.
 It allows parishioners to book sacraments and services online while providing the parish admin team with a secure, real-time dashboard for managing appointments and automatically generating official sacramental certificates.
 Built with:
@@ -10,7 +9,7 @@ Supabase (backend, database, authentication, realtime)
 EmailJS + Semaphore SMS (notifications)
 docxtemplater (automated .docx certificate generation)
 
-2. Key Features (Public Website – index.html)
+**2. Key Features (Public Website – index.html)**
 Hero Section & Booking Experience
 
 Stunning full-screen hero with fixed altar background image and dark overlay
@@ -49,7 +48,7 @@ Fully responsive (mobile-first design)
 Lucide icons throughout
 Professional footer with copyright
 
-3. Key Features (Admin Dashboard – admin.html)
+**3. Key Features (Admin Dashboard – admin.html)**
 Secure Login
 
 Supabase Authentication (email + password)
@@ -86,8 +85,8 @@ Instant .docx download with correct placeholders filled
 Realtime Certificates table (sortable by Type, Name, Date, Minister)
 Download button on every saved record
 
-4. Technical & Security Features
-
+**4. Technical & Security Features
+**
 All data stored in Supabase (appointments + certificates tables)
 Realtime subscriptions (appointments and certificates update live)
 Image upload converted to base64 and stored safely
